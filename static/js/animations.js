@@ -616,3 +616,35 @@ const fixContactElements = () => {
 // Run the contact form fix
 fixContactElements();
 });
+
+/* === ABOUT PAGE COUNTER ANIMATION === */
+document.addEventListener('DOMContentLoaded', () => {
+
+  const counters = document.querySelectorAll('.count');
+  const opts = { threshold: .6 };
+
+  const runCounter = el => {
+    const target = +el.dataset.target;
+    let curr = 0;
+    const step = Math.ceil(target / 40);  // ≈40 frames
+    const tick = () => {
+      curr += step;
+      if (curr >= target) { el.textContent = target; return; }
+      el.textContent = curr;
+      requestAnimationFrame(tick);
+    };
+    tick();
+  };
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        runCounter(e.target);
+        io.unobserve(e.target);
+      }
+    });
+  }, opts);
+
+  counters.forEach(c => io.observe(c));
+
+}); // end DOMContentLoaded
